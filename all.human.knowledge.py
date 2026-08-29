@@ -178,6 +178,8 @@ def main():
             if newline.startswith('='*minsectionlevel) and newline.endswith('='*minsectionlevel):
                 sectionlevel = len(newline.split(' ')[0].strip())
                 sectiontitle = newline.replace('=', '').strip()
+                if sectiontitle.lower().strip() == "other":
+                    break
                 if sectionlevel == minsectionlevel:
                     sectionparent = sectiontitle
                     sections.append([sectiontitle, sectionlevel])
@@ -262,8 +264,6 @@ def main():
                     if y['parent'] == sectiontitle:
                         rowspan += 1
                 if rowspan == 1:
-                    if not sectiontitle in summarydic.keys():
-                        continue
                     anchors = '{{·}} '.join(['[[#%s|%s]]' % (anchor, anchor) for anchor in summarydic[sectiontitle]['anchors']])
                     if not anchors:
                         anchors = '[[#%s|See table]]' % (sectiontitle)
