@@ -255,7 +255,7 @@ def main():
         summarytotalwikidata = 0
         summarytotalestimate = 0
         for sectiontitle, sectionlevel in sections:
-            if sectiontitle.strip().lower() == "other":
+            if sectiontitle.strip().lower() in ["other", "special pages"]:
                 continue
             summaryrow = ''
             if sectionlevel == minsectionlevel:
