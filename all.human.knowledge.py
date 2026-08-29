@@ -75,7 +75,7 @@ PREFIX wdt: <http://www.wikidata.org/prop/direct/>
             url = 'https://qlever.dev/api/wikidata?query=%s' % urllib.parse.quote(query)
             url = '%s&format=json' % (url)
             #print(url)
-            time.sleep(0.5)
+            time.sleep(0.2)
             sparql = getURL(url=url, retry=False, timeout=20)
             json1 = loadSPARQL(sparql=sparql)
             return json1['results']['bindings'][0]['count']['value']
@@ -106,6 +106,27 @@ PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     #finally when no data is available, return empty string, and bot will keep the current value in the row
     return ''
 
+def getglobalstats():
+    time.sleep(1)
+    wpenstatsurl = 'https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
+    wpenarticles = json.loads(getURL(url=wpenstatsurl))['query']['statistics']['articles']
+    time.sleep(1)
+    wiktenstatsurl = 'https://en.wiktionary.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
+    wiktenarticles = json.loads(getURL(url=wiktenstatsurl))['query']['statistics']['articles']
+    time.sleep(1)
+    wikisourceenstatsurl = 'https://en.wikisource.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
+    wikisourceenarticles = json.loads(getURL(url=wikisourceenstatsurl))['query']['statistics']['articles']
+    time.sleep(1)
+    wdstatsurl = 'https://www.wikidata.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
+    wdarticles = json.loads(getURL(url=wdstatsurl))['query']['statistics']['articles']
+    time.sleep(1)
+    commonsstatsurl = 'https://commons.wikimedia.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
+    commonsfiles = json.loads(getURL(url=commonsstatsurl))['query']['statistics']['images']
+    time.sleep(1)
+    speciesstatsurl = 'https://species.wikimedia.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
+    speciesarticles = json.loads(getURL(url=speciesstatsurl))['query']['statistics']['articles']
+    return wpenarticles, wiktenarticles, wikisourceenarticles, wdarticles, commonsfiles, speciesarticles
+
 def main():
     minsectionlevel = 2
     enwpsite = pywikibot.Site('en', 'wikipedia')
@@ -122,24 +143,13 @@ def main():
         #update inline stuff
         today = datetime.datetime.now().strftime('%Y-%m-%d')
         #intro
-        wpenstatsurl = 'https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
-        jsonwpen = json.loads(getURL(url=wpenstatsurl))
-        wpenarticles = jsonwpen['query']['statistics']['articles']
-        wiktenstatsurl = 'https://en.wiktionary.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
-        jsonwikten = json.loads(getURL(url=wiktenstatsurl))
-        wiktenarticles = jsonwikten['query']['statistics']['articles']
-        wikisourceenstatsurl = 'https://en.wikisource.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
-        jsonwikisourceen = json.loads(getURL(url=wikisourceenstatsurl))
-        wikisourceenarticles = jsonwikisourceen['query']['statistics']['articles']
-        wdstatsurl = 'https://www.wikidata.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
-        jsonwd = json.loads(getURL(url=wdstatsurl))
-        wdarticles = jsonwd['query']['statistics']['articles']
-        commonsstatsurl = 'https://commons.wikimedia.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
-        jsoncommons = json.loads(getURL(url=commonsstatsurl))
-        commonsfiles = jsoncommons['query']['statistics']['images']
-        speciesstatsurl = 'https://species.wikimedia.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&format=json'
-        jsonspecies = json.loads(getURL(url=speciesstatsurl))
-        speciesarticles = jsonspecies['query']['statistics']['articles']
+        wpenarticles, wiktenarticles, wikisourceenarticles, wdarticles, commonsfiles, speciesarticles = 0, 0, 0, 0, 0 ,0
+        try:
+            wpenarticles, wiktenarticles, wikisourceenarticles, wdarticles, commonsfiles, speciesarticles = getglobalstats()
+        except:
+            time.sleep(5)
+            wpenarticles, wiktenarticles, wikisourceenarticles, wdarticles, commonsfiles, speciesarticles = getglobalstats()
+        
         wmstats = """<!-- wmstats -->As of {{subst:CURRENTMONTHNAME}} {{subst:CURRENTYEAR}}, [[Q328|English Wikipedia]] hosts {{formatnum:%s}} articles,<ref>{{/cw|url=https://en.wikipedia.org/wiki/Special:Statistics|title=Special:Statistics|publisher=English Wikipedia|accessdate=%s}} "Content pages: {{formatnum:%s}}."</ref> and the wider Wikimedia ecosystem includes {{formatnum:%s}} items in [[Q2013|Wikidata]],<ref>{{/cw|url=https://www.wikidata.org/wiki/Special:Statistics|title=Special:Statistics|publisher=Wikidata|accessdate=%s}} "Content pages: {{formatnum:%s}}."</ref> {{formatnum:%s}} files in [[Q565|Wikimedia Commons]],<ref>{{/cw|url=https://commons.wikimedia.org/wiki/Special:MediaStatistics|title=Special:MediaStatistics|publisher=Wikimedia Commons|accessdate=%s}} "{{formatnum:%s}} files."</ref> {{formatnum:%s}} forms of life in [[Q13679|Wikispecies]],<ref>{{/cw|url=https://species.wikimedia.org/wiki/Special:Statistics|title=Special:Statistics|publisher=Wikispecies|accessdate=%s}} "Content pages: {{formatnum:%s}}."</ref> {{formatnum:%s}} entries in [[Q151|Wiktionary]],<ref>{{/cw|url=https://en.wiktionary.org/wiki/Special:Statistics|title=Special:Statistics|publisher=Wiktionary|accessdate=%s}} "Content pages: {{formatnum:%s}}."</ref> and {{formatnum:%s}} texts in [[Q263|Wikisource]].<ref>{{/cw|url=https://en.wikisource.org/wiki/Special:Statistics|title=Special:Statistics|publisher=Wikisource|accessdate=%s}} "Content pages: {{formatnum:%s}}."</ref><!-- /wmstats -->""" % (wpenarticles, today, wpenarticles, wdarticles, today, wdarticles, commonsfiles, today, commonsfiles, speciesarticles, today, speciesarticles, wiktenarticles, today, wiktenarticles, wikisourceenarticles, today, wikisourceenarticles)
         ahknewtext = re.sub(r'<!-- wmstats -->.*?<!-- /wmstats -->', wmstats, ahknewtext)
         #biography
@@ -252,6 +262,8 @@ def main():
                     if y['parent'] == sectiontitle:
                         rowspan += 1
                 if rowspan == 1:
+                    if not sectiontitle in summarydic.keys():
+                        continue
                     anchors = '{{·}} '.join(['[[#%s|%s]]' % (anchor, anchor) for anchor in summarydic[sectiontitle]['anchors']])
                     if not anchors:
                         anchors = '[[#%s|See table]]' % (sectiontitle)
