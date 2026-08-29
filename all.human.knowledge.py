@@ -66,9 +66,17 @@ def getQueryCount(p='', q='', site=''):
                         }
                         """ % (p, q)
             print(query)
-            url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=%s' % (urllib.parse.quote(query))
+            #url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=%s' % (urllib.parse.quote(query))
+            query = """PREFIX schema: <http://schema.org/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+""" + query
+            url = 'https://qlever.dev/api/wikidata?query=%s' % urllib.parse.quote(query)
             url = '%s&format=json' % (url)
-            sparql = getURL(url=url, retry=False, timeout=120)
+            #print(url)
+            time.sleep(0.5)
+            sparql = getURL(url=url, retry=False, timeout=20)
             json1 = loadSPARQL(sparql=sparql)
             return json1['results']['bindings'][0]['count']['value']
         except:
