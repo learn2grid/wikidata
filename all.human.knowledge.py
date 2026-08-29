@@ -178,8 +178,6 @@ def main():
             if newline.startswith('='*minsectionlevel) and newline.endswith('='*minsectionlevel):
                 sectionlevel = len(newline.split(' ')[0].strip())
                 sectiontitle = newline.replace('=', '').strip()
-                if sectiontitle.lower().strip() == "other":
-                    break
                 if sectionlevel == minsectionlevel:
                     sectionparent = sectiontitle
                     sections.append([sectiontitle, sectionlevel])
@@ -257,6 +255,8 @@ def main():
         summarytotalwikidata = 0
         summarytotalestimate = 0
         for sectiontitle, sectionlevel in sections:
+            if sectiontitle.strip().lower() == "other":
+                continue
             summaryrow = ''
             if sectionlevel == minsectionlevel:
                 rowspan = 0
