@@ -383,6 +383,9 @@ def main():
 		#trying to boost speed again, added aug 8 2026
 		#query = '-haswbstatement:P1163 %d %d -scan -dpla -page -library -bibliotheque -volume -book -pdf -svg -png -ogg -wav -tiff -tif -gif -webp -webm -djvu -djv -mp4 -flac -mp3 -xcf -stl jpg ' % (random.randint(1, 100), random.randint(1, 100))
 		
+		#trying to boost speed again, added aug 31 2026
+		query = '-haswbstatement:P1163 %s -scan -dpla -page -library -bibliotheque -volume -book -pdf -svg -png -ogg -wav -tiff -tif -gif -webp -webm -djvu -djv -mp4 -flac -mp3 -xcf -stl jpg ' % (''.join(random.choice(string.ascii_letters) for xx in range(1)))
+		
 		gen = pagegenerators.SearchPageGenerator(site=sitecommons, query=query, namespaces=[6], total=1000)
 		c = 0
 		skipped = 0
