@@ -380,11 +380,12 @@ def main():
 		
 		#trying to boost speed, added jan 10 2026
 		#query = '-haswbstatement:P1163 %d %d -scan -dpla -page -library -bibliotheque -volume -book -pdf -svg -png -ogg -wav -tiff -tif -gif -webp -webm -djvu -djv -mp4 -flac -mp3 -xcf -stl jpg ' % (random.randint(1, 10), random.randint(1, 10))
+		
 		#trying to boost speed again, added aug 8 2026
 		#query = '-haswbstatement:P1163 %d %d -scan -dpla -page -library -bibliotheque -volume -book -pdf -svg -png -ogg -wav -tiff -tif -gif -webp -webm -djvu -djv -mp4 -flac -mp3 -xcf -stl jpg ' % (random.randint(1, 100), random.randint(1, 100))
 		
 		#trying to boost speed again, added sept 3 2026
-		query = '-haswbstatement:P1163 %s %s -scan -dpla -page -library -bibliotheque -volume -book -pdf -svg -png -ogg -wav -tiff -tif -gif -webp -webm -djvu -djv -mp4 -flac -mp3 -xcf -stl jpg ' % (random.randint(0, 10), ''.join(random.choice(string.ascii_letters) for xx in range(1)))
+		#query = '-haswbstatement:P1163 %s %s -scan -dpla -page -library -bibliotheque -volume -book -pdf -svg -png -ogg -wav -tiff -tif -gif -webp -webm -djvu -djv -mp4 -flac -mp3 -xcf -stl jpg ' % (random.randint(0, 10), ''.join(random.choice(string.ascii_letters) for xx in range(1)))
 		
 		gen = pagegenerators.SearchPageGenerator(site=sitecommons, query=query, namespaces=[6], total=1000)
 		c = 0
@@ -393,9 +394,9 @@ def main():
 			time.sleep(0.1)
 			print("Result", c, "from query", query)
 			c += 1
-			if c >= 1000:
-				break #break cada 1000 files para saltar a otra zona de commons aleatoriamente
-			if skipped >= 25: #too many useless results
+			if c >= 2000:
+				break #break cada 2000 files para saltar a otra zona de commons aleatoriamente
+			if skipped >= 50: #too many useless results
 				break
 			print('==', page.title(), '==')
 			if page.namespace() != 6:
